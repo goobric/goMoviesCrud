@@ -1,5 +1,16 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"math/rand"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
+)
+
 // "fmt"  "log" "encoding/json"  "math/random"  "net/http"  "strconv"  "github.com/gorilla/mux"
 
 type Movie struct {
@@ -16,12 +27,12 @@ type Director struct {
 
 var movies []Movie
 
-func getMovies(w, http.ResponseWriter, r *http.Request) {
+func getMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(movies)
 }
 
-func deleteMovies(w, http.ResponseWriter, r *http.Request) {
+func deleteMovie(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	for index, item := range movies {
@@ -30,7 +41,7 @@ func deleteMovies(w, http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	json.NewEncoder(w).Encode(movies) 
+	json.NewEncoder(w).Encode(movies)
 }
 
 func getMovie(w http.ResponseWriter, r *http.Request) {
@@ -88,5 +99,5 @@ func main() {
 	r.HandleFunc("/movies/{id}", deleteMovie).Methods("DELETE")
 
 	fmt.Printf("Starting server at port 8000\n")
-	log.Fatal(http.ListenAndServer(":8000", r))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
